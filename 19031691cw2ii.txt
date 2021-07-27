@@ -1,0 +1,176 @@
+#!/bin/bash
+if [ $# = 2 ]
+then
+if [[ $1 =~ [Aa-Zz] && $2 =~ ^[0-9]+$ ]] #passing two parameters $1 which contain letters and $2 which conatins number
+then
+echo "--------------------------------------------------------------------------------------------------------------"
+echo -e "\t\tYou are required to enter the program name here ==> \c"
+read program
+else
+echo -e "Alert!\nInvalid Name or ID. Please enter a valid First Name or ID."
+exit
+fi
+else
+echo -e "Enter your first name as the first parameter and ID as the second parameter"
+exit
+fi
+Total=4 #providing four attempts to the secret key
+SecretKeyVerify(){
+echo -e "Enter a secret key ==> \c"
+read -s secretkey
+until [ $secretkey = "siddhartha" ]
+do
+if [ $Total -lt 1  ]
+then
+exit
+else
+echo "Secret key did not matched.Try Again.You have got $Count attempts left."
+((Total--)) #reducing every attempt by -1
+SecretKeyVerify
+fi
+done
+}
+SecretKeyVerify
+echo -e "**********\n\t\t\t\tWELCOME ==> $program" #Greeting with the program name
+echo -e "\t\t\t\t\tID ==> $2"
+echo -e "\t\t\t\t\tFirst Name ==> $1"
+Today=$(date +"Year: %Y, Month: %m, Day: %d")
+echo -e "\t\t\t\t$Today"
+ChooseCountry(){
+echo -e "\t----------------------------------------------------------------------"
+echo -e "\t----------------------------------------------------------------------"
+echo -e "\t\tHere are five countries team that play football"
+echo -e "\n\t\t\tName:Brazil\tCode:BRZ"
+echo -e "\t\t\tName:Argentina\tCode:ARG"
+echo -e "\t\t\tName:Nepal\tCode:NEP"
+echo -e "\t\t\tName:China\tCode:CHI"
+echo -e "\t\t\tName:England\tCode:ENG"
+echo -e "\nGuess and type the code for one of the top five football teams ==> \c"
+read Code
+CountryCode=${Code,,}
+until [[ $CountryCode == "arg" || $CountryCode == "brz" || $CountryCode == "nep" || $CountryCode == "chi" || $CountryCode == "eng" ]]
+do
+echo "Invalid country code, please try again."
+ChooseCountry
+done
+case "$CountryCode" in
+"arg")
+echo -e "\nCorrect Answer!\n==> Argentina has 14 Copa America titles to its credit, as well as\n    the FIFA Confederations Cup in 1992. The country's Olympic\n    representative has two gold medals."
+;;
+"brz")
+echo "Incorrect answer, please try again."
+ChooseCountry;;
+"nep")
+echo "Incorrect answer, please try again."
+ChooseCountry;;
+"chi")
+echo "Incorrect answer, please try again."
+ChooseCountry;;
+"ENG")
+echo "Incorrect answer, please try again."
+ChooseCountry;;
+esac
+}
+ChooseCountry
+PlayerSelect(){
+echo -e "\t----------------------------------------------------------------------"
+echo -e "\t----------------------------------------------------------------------"
+echo -e "\t\tHere are five outstanding football players from the unit."
+echo -e "\n\t\t\tName:Lionel Messi\tCode:LM"
+echo -e "\t\t\tName:Neymar Junior\tCode:NJ"
+echo -e "\t\t\tName:Kiran Chemjong\tCode:KC"
+echo -e "\t\t\tName:Zheng Zhi\t\tCode:ZZ"
+echo -e "\t\t\tName:Harry Kane\t\tCode:HK"
+echo -e "\nEnter three of the five codes given ==> \c"
+read player1 player2 player3
+players=($player1 $player2 $player3)
+if [[ ${#players[@]} -eq 3 && $player1 =~ [Aa-Zz] && $player2 =~ [Aa-Zz] && $player3 =~ [Aa-Zz] ]]
+then
+if [[ $player1 = $player2 || $player2 = $player3 || $player1 = $player3 ]]
+then
+echo "You cannot enter the same player multiple times."
+PlayerSelect
+else
+echo -e "\t----------------------------------------------------------------------"
+fi
+else
+echo "Error! Please enter code for respective three players."
+PlayerSelect
+fi
+}
+PlayerSelect
+PlayerChoose(){
+PS3='Please enter a number from the list above ==> '
+select Player in ${player1^^} ${player2^^} ${player3^^}
+do
+if [ -z $Player ]
+then
+echo "You did not choose the number from the above list"
+PlayerChoose
+else
+echo "The chosen player is $Player"
+fi
+break
+done
+ReProgram(){
+echo "There is no external file of the player that you choose. Try Again"
+PlayerSelect
+PlayerChoose
+}
+case "$Player" in
+"LM")
+if [ -f lm.txt ] # -f finds the file lm.txt within the same directory
+then
+cat lm.txt #if found then run the file using cat
+else
+ReProgram #else call the method ReProgram again
+fi;;
+"NJ")
+if [ -f nj.txt ]
+then
+cat nj.txt
+else
+ReProgram
+fi;;
+"KC")
+if [ -f kc.txt ]
+then
+cat kc.txt
+else
+ReProgram
+fi;;
+"ZZ")
+if [ -f zz.txt ]
+then
+cat zz.txt
+else
+ReProgram
+fi;;
+"HK")
+if [ -f hk.txt ]
+then
+cat hk.txt
+else
+ReProgram
+fi;;
+esac
+}
+PlayerChoose
+echo -e "\n----------------------------------------------------------------------"
+close(){
+echo -e "Do you want to repeat the program again yes/no ? ==> \c"
+read Answer
+if [ $Answer = "yes" ]
+then
+PlayerSelect
+PlayerChoose
+close
+elif [ $Answer = "no" ]
+then
+exit
+else
+echo "Please answer either yes or no"
+close
+fi
+}
+close
